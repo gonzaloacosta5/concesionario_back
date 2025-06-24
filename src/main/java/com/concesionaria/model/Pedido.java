@@ -1,5 +1,8 @@
 package com.concesionaria.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pedido")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Pedido {
 
     @Id
@@ -31,6 +35,7 @@ public class Pedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonBackReference
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,11 +43,8 @@ public class Pedido {
     private Vehiculo vehiculo;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<HistorialEstado> historial = new ArrayList<>();
-
-    public Pedido() {}
-
-    // Getters & setters…
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

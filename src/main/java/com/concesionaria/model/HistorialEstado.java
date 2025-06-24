@@ -1,7 +1,7 @@
-// File: src/main/java/com/concesionaria/model/HistorialEstado.java
 package com.concesionaria.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +21,7 @@ public class HistorialEstado {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonIgnore
     private Pedido pedido;
 
     public HistorialEstado() {
@@ -32,15 +33,35 @@ public class HistorialEstado {
         this.pedido = pedido;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() { 
+        return id; 
+    }
+    
+    public void setId(Long id) { 
+        this.id = id; 
+    }
 
-    public LocalDateTime getFechaCambio() { return fechaCambio; }
-    public void setFechaCambio(LocalDateTime fechaCambio) { this.fechaCambio = fechaCambio; }
+    public LocalDateTime getFechaCambio() { 
+        return fechaCambio; 
+    }
+    
+    public void setFechaCambio(LocalDateTime fechaCambio) { 
+        this.fechaCambio = fechaCambio; 
+    }
 
-    public EstadoPedido getEstado() { return estado; }
-    public void setEstado(EstadoPedido estado) { this.estado = estado; }
+    public EstadoPedido getEstado() { 
+        return estado; 
+    }
+    
+    public void setEstado(EstadoPedido estado) { 
+        this.estado = estado; 
+    }
 
-    public Pedido getPedido() { return pedido; }
-    public void setPedido(Pedido pedido) { this.pedido = pedido; }
+    public Pedido getPedido() { 
+        return pedido; 
+    }
+    
+    public void setPedido(Pedido pedido) { 
+        this.pedido = pedido; 
+    }
 }

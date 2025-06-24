@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
@@ -49,6 +49,12 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- Jackson Hibernate Module for Hibernate 6 / Jakarta Persistence -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-hibernate6</artifactId>
+    </dependency>
+
     <!-- Tests -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -64,7 +70,7 @@
 
   <build>
     <plugins>
-      <!-- Compiler Plugin para Java 17, sin procesar anotaciones -->
+      <!-- Compiler Plugin para Java 17 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -85,5 +91,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

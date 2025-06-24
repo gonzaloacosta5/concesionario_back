@@ -1,6 +1,7 @@
-// File: src/main/java/com/concesionaria/model/Cliente.java
 package com.concesionaria.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "cliente")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Cliente {
 
     @Id
@@ -36,10 +38,10 @@ public class Cliente {
     private String telefono;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
 
-    public Cliente() {
-    }
+    public Cliente() { }
 
     public Cliente(String nombre, String apellido, String documento, String email, String telefono) {
         this.nombre = nombre;

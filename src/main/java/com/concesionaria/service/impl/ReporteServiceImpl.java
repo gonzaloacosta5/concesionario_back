@@ -40,25 +40,20 @@ public class ReporteServiceImpl implements ReporteService {
             })
             .collect(Collectors.toList());
 
-        // Si no incluye impuestos, sumamos cero donde corresponda
         double totalSin = incImp
             ? filtrados.stream().mapToDouble(Pedido::getTotal).sum()
             : 0.0;
 
-        // Total global
         double totalCon = filtrados.stream().mapToDouble(Pedido::getTotal).sum();
 
-        // Agrupado por forma de pago
         Map<FormaPago, Double> porForma = filtrados.stream()
             .collect(Collectors.groupingBy(
                 Pedido::getFormaPago,
                 Collectors.summingDouble(Pedido::getTotal)
             ));
 
-        // Inserto la clave TOTAL_SIN_IMPUESTOS y TOTAL_CON_IMPUESTOS si quieres,
-        // o devuelve sólo `porForma`.  
-        porForma.put(FormaPago.CONTADO, totalSin);   // opcional  
-        porForma.put(FormaPago.TRANSFERENCIA, totalCon); // opcional  
+        porForma.put(FormaPago.CONTADO, totalSin);
+        porForma.put(FormaPago.TRANSFERENCIA, totalCon);
 
         return porForma;
     }
