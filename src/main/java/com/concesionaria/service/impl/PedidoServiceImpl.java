@@ -46,29 +46,35 @@ public class PedidoServiceImpl implements PedidoService {
         });
     }
 
-    @Override
-    public Pedido crearPedido(Pedido pedido) {
-        if (pedidoRepo.existsByNumeroPedido(pedido.getNumeroPedido())) {
-            throw new DuplicateResourceException("Pedido repetido");
-        }
-        Cliente c = clienteRepo.findById(pedido.getCliente().getId())
-            .orElseThrow(() -> new ResourceNotFoundException("Cliente no existe"));
-        Vehiculo v = vehRepo.findById(pedido.getVehiculo().getId())
-            .orElseThrow(() -> new ResourceNotFoundException("Vehículo no existe"));
-        pedido.setCliente(c);
-        pedido.setVehiculo(v);
-        pedido.setFechaCreacion(LocalDateTime.now());
-
-        String tipo = v.getTipo().name();
-        ImpuestoStrategy strat = estrategias.get(tipo);
-        if (strat == null) {
-            throw new IllegalStateException("No hay estrategia para tipo " + tipo);
-        }
-        double imp = strat.calcular(pedido);
-        pedido.setTotal(v.getPrecioBase() + imp);
-
-        return pedidoRepo.save(pedido);
+@Override
+public Pedido crearPedido(Pedido pedido) {
+    if (pedidoRepo.existsByNumeroPedido(pedido.getNumeroPedido())) {
+        throw new DuplicateResourceException("Pedido repetido");
     }
+
+    Cliente  c = clienteRepo.findById(pedido.getCliente().getId())
+                  .orElseThrow(() -> new ResourceNotFoundException("Cliente no existe"));
+    Vehiculo v = vehRepo.findById(pedido.getVehiculo().getId())
+                  .orElseThrow(() -> new ResourceNotFoundException("Vehículo no existe"));
+
+    pedido.setCliente(c);
+    pedido.setVehiculo(v);
+    pedido.setFechaCreacion(LocalDateTime.now());
+
+    String tipo = v.getTipo().name();              
+    ImpuestoStrategy strat = estrategias.get(tipo);
+    if (strat == null) {
+        throw new IllegalStateException("No hay estrategia para tipo " + tipo);
+    }
+    double imp = strat.calcular(pedido);
+    pedido.setTotal(v.getPrecioBase() + imp);
+
+    Pedido guardado = pedidoRepo.save(pedido);
+
+    return pedidoRepo.findById(guardado.getId())
+                     .orElseThrow();
+}
+
 
     @Override
     public Pedido avanzarEstado(Long pedidoId, String nuevoEstado) {

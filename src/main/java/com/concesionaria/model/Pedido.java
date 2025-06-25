@@ -1,9 +1,8 @@
 package com.concesionaria.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,8 @@ import java.util.List;
 @Table(name = "pedido")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Pedido {
+
+    /* ──────────────────── Atributos simples ──────────────────── */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,45 +34,91 @@ public class Pedido {
     @Column(name = "forma_pago", nullable = false)
     private FormaPago formaPago;
 
+    /* ──────────────────── Relaciones ──────────────────── */
+
+    /** Cliente asociado; se serializa pero sin su lista de pedidos para evitar ciclos */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({ "pedidos", "hibernateLazyInitializer", "handler" })
     private Cliente cliente;
 
+    /** Vehículo asociado; carga perezosa y se serializa completo */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehiculo_id", nullable = false)
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Vehiculo vehiculo;
 
+    /** Historial de estados del pedido */
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("pedido-historial")
+    @JsonIgnoreProperties({ "pedido", "hibernateLazyInitializer", "handler" })
     private List<HistorialEstado> historial = new ArrayList<>();
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    /* ──────────────────── Getters & Setters ──────────────────── */
 
-    public String getNumeroPedido() { return numeroPedido; }
-    public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    public String getNumeroPedido() {
+        return numeroPedido;
+    }
+    public void setNumeroPedido(String numeroPedido) {
+        this.numeroPedido = numeroPedido;
+    }
 
-    public Double getTotal() { return total; }
-    public void setTotal(Double total) { this.total = total; }
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
 
-    public String getConfiguracionExtra() { return configuracionExtra; }
-    public void setConfiguracionExtra(String configuracionExtra) { this.configuracionExtra = configuracionExtra; }
+    public Double getTotal() {
+        return total;
+    }
+    public void setTotal(Double total) {
+        this.total = total;
+    }
 
-    public FormaPago getFormaPago() { return formaPago; }
-    public void setFormaPago(FormaPago formaPago) { this.formaPago = formaPago; }
+    public String getConfiguracionExtra() {
+        return configuracionExtra;
+    }
+    public void setConfiguracionExtra(String configuracionExtra) {
+        this.configuracionExtra = configuracionExtra;
+    }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public FormaPago getFormaPago() {
+        return formaPago;
+    }
+    public void setFormaPago(FormaPago formaPago) {
+        this.formaPago = formaPago;
+    }
 
-    public Vehiculo getVehiculo() { return vehiculo; }
-    public void setVehiculo(Vehiculo vehiculo) { this.vehiculo = vehiculo; }
+    public Cliente getCliente() {
+        return cliente;
+    }
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
-    public List<HistorialEstado> getHistorial() { return historial; }
-    public void setHistorial(List<HistorialEstado> historial) { this.historial = historial; }
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    public List<HistorialEstado> getHistorial() {
+        return historial;
+    }
+    public void setHistorial(List<HistorialEstado> historial) {
+        this.historial = historial;
+    }
+
+    /* ──────────────────── Métodos utilitarios ──────────────────── */
 
     public void addHistorial(HistorialEstado h) {
         historial.add(h);

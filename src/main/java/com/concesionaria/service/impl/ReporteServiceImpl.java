@@ -33,39 +33,42 @@ public class ReporteServiceImpl implements ReporteService {
                 .collect(Collectors.toList());
     }
 
+    /* ---------- CSV ---------- */
     @Override
     public byte[] exportPedidosCsv(LocalDate desde, LocalDate hasta, String estado) {
 
         List<Pedido> pedidos = pedidoRepo.findAll().stream()
-                .filter(p -> {
-                    LocalDate f = p.getFechaCreacion().toLocalDate();
-                    return !f.isBefore(desde) && !f.isAfter(hasta) &&
-                           (estado == null ||
-                            p.getHistorial().stream()
-                              .anyMatch(h -> h.getEstado().name().equalsIgnoreCase(estado)));
-                })
-                .collect(Collectors.toList());
+            .filter(p -> {
+                LocalDate f = p.getFechaCreacion().toLocalDate();
+                return !f.isBefore(desde) && !f.isAfter(hasta) &&
+                    (estado == null || p.getHistorial().stream()
+                        .anyMatch(h -> h.getEstado().name().equalsIgnoreCase(estado)));
+            })
+            .collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder();
         sb.append("numeroPedido,fecha,estado,cliente,vehiculo,total,formaPago\n");
 
         for (Pedido p : pedidos) {
-            String estadoActual = p.getHistorial()
-                                   .get(p.getHistorial().size() - 1)
-                                   .getEstado().name();
+            String estadoActual = p.getHistorial().isEmpty()
+                    ? "SIN_ESTADO"
+                    : p.getHistorial()
+                        .get(p.getHistorial().size() - 1)
+                        .getEstado().name();
 
             sb.append(p.getId()).append(',')
-              .append(p.getFechaCreacion()).append(',')
-              .append(estadoActual).append(',')
-              .append(p.getCliente().getNombre())
-              .append(' ').append(p.getCliente().getApellido()).append(',')
-              .append(p.getVehiculo().getMarca())
-              .append(' ').append(p.getVehiculo().getModelo()).append(',')
-              .append(p.getTotal()).append(',')
-              .append(p.getFormaPago().name()).append('\n');
+            .append(p.getFechaCreacion()).append(',')
+            .append(estadoActual).append(',')
+            .append(p.getCliente().getNombre()).append(' ')
+            .append(p.getCliente().getApellido()).append(',')
+            .append(p.getVehiculo().getMarca()).append(' ')
+            .append(p.getVehiculo().getModelo()).append(',')
+            .append(p.getTotal()).append(',')
+            .append(p.getFormaPago().name()).append('\n');
         }
         return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
+
 
     @Override
     public Map<FormaPago, Double> calcularTotales(LocalDate desde, LocalDate hasta, boolean incImp) {
