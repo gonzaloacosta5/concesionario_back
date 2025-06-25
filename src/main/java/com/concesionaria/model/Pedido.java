@@ -43,7 +43,7 @@ public class Pedido {
     private Vehiculo vehiculo;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("pedido-historial")
     private List<HistorialEstado> historial = new ArrayList<>();
 
     public Long getId() { return id; }

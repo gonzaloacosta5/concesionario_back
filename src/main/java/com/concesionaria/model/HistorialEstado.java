@@ -1,6 +1,8 @@
 package com.concesionaria.model;
 
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
@@ -21,7 +23,7 @@ public class HistorialEstado {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference("pedido-historial")
     private Pedido pedido;
 
     public HistorialEstado() {

@@ -9,4 +9,5 @@ import java.util.Map;
 public interface ReporteService {
     List<Pedido> generarReportePedidos(LocalDate desde, String estado);
     Map<FormaPago, Double> calcularTotales(LocalDate desde, LocalDate hasta, boolean incluirImpuestos);
+    byte[] exportPedidosCsv(LocalDate desde, LocalDate hasta, String estado);
 }
