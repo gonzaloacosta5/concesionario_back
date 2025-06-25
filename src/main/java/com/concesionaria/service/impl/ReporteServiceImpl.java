@@ -22,6 +22,7 @@ public class ReporteServiceImpl implements ReporteService {
         this.pedidoRepo = pedidoRepo;
     }
 
+    /* ---------- LISTA JSON ---------- */
     @Override
     public List<Pedido> generarReportePedidos(LocalDate desde, String estado) {
         return pedidoRepo.findAll().stream()
