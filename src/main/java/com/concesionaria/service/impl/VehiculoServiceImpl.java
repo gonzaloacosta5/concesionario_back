@@ -1,5 +1,6 @@
 package com.concesionaria.service.impl;
 
+import com.concesionaria.exception.DuplicateResourceException;
 import com.concesionaria.exception.ResourceNotFoundException;
 import com.concesionaria.model.Vehiculo;
 import com.concesionaria.repository.VehiculoRepository;
@@ -20,6 +21,11 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public Vehiculo crearVehiculo(Vehiculo vehiculo) {
+        if (repo.existsByChasis(vehiculo.getChasis()))
+            throw new DuplicateResourceException("Chasis ya registrado");
+
+        if (repo.existsByMotor(vehiculo.getMotor()))
+            throw new DuplicateResourceException("Motor ya registrado");
         return repo.save(vehiculo);
     }
 
