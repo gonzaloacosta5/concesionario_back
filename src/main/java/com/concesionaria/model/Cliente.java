@@ -1,9 +1,8 @@
 package com.concesionaria.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "cliente")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Cliente {
 
     @Id
@@ -39,8 +38,13 @@ public class Cliente {
     @Column(nullable = false)
     private String telefono;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    
+    @OneToMany(
+        mappedBy = "cliente",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.EAGER       
+    )
     private List<Pedido> pedidos = new ArrayList<>();
 
     public Cliente() { }
@@ -52,6 +56,8 @@ public class Cliente {
         this.email = email;
         this.telefono = telefono;
     }
+
+    // ——— Getters y setters estándar ———
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -82,5 +88,13 @@ public class Cliente {
     public void removePedido(Pedido pedido) {
         pedidos.remove(pedido);
         pedido.setCliente(null);
+    }
+
+    // ——> Getter calculado para exponer en JSON el número de pedidos:
+
+    @Transient
+    @JsonProperty("cantidadPedidos")
+    public int getCantidadPedidos() {
+        return pedidos != null ? pedidos.size() : 0;
     }
 }
